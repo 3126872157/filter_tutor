@@ -1,0 +1,40 @@
+# CLion and JetBrains IDEs
+.idea/
+*.iml
+cmake-build-debug/
+cmake-build-release/
+cmake-build-*/
+*.ipr
+*.iws
+*.clion*
+
+# ROS2 colcon build files
+build/
+install/
+log/
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# ROS2 package-specific files
+ament_cmake_environment_hooks/
+ament_cmake_index/
+local_setup.*
+setup.*
+*.pyc
+__pycache__/
+
+# Temporary files
+*.swp
+*.swo
+*.swn
+*~
+.DS_Store
+*.bak
+*.tmp
+*.log
+
