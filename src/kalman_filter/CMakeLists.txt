@@ -34,6 +34,7 @@ endif()
 add_executable(test_node
                src/test_node.cpp
                src/simulator.cpp
+               src/kalman.cpp
 )
 
 target_include_directories(test_node PRIVATE include)
