@@ -12,6 +12,12 @@ Simulator::Simulator(const std::string& name) : Node(name), generator_(std::rand
     kalman_filter_CA_->Q_set(100);
     kalman_filter_CA_->R_set(0.01);
 
+    this->declare_parameter("Kalman_Q", 100.0);
+    this->declare_parameter("Kalman_R", 0.01);
+
+    params_callback_handle_ = this->add_on_set_parameters_callback(
+        std::bind(&Simulator::param_callback, this, std::placeholders::_1));
+
     //并行回调，设置为同一组别
     callback_group_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
     //发布原始数据
@@ -45,7 +51,7 @@ void Simulator::simulator_callback()
     static double delta_t = 0.01;
     static uint16_t error_injeect_count = 0;
 
-    RCLCPP_INFO(this->get_logger(), "Simulator callback");
+    // RCLCPP_INFO(this->get_logger(), "Simulator callback");
 
     //运动方程
     if (vec_x > 2)
@@ -83,7 +89,7 @@ void Simulator::simulator_callback()
 //生成滤波后数据，以云台的响应频率发出
 void Simulator::kalman_callback()
 {
-    RCLCPP_INFO(this->get_logger(), "Kalman callback");
+    // RCLCPP_INFO(this->get_logger(), "Kalman callback");
 
     if (sim_running_ == false)
     {
@@ -102,4 +108,25 @@ void Simulator::kalman_callback()
         filtered_pub_->publish(filtered_data);
         sim_running_ = true;
     }
+}
+
+rcl_interfaces::msg::SetParametersResult Simulator::param_callback(const std::vector<rclcpp::Parameter>& params)
+{
+    rcl_interfaces::msg::SetParametersResult result;
+    result.successful = true;
+
+    for (const auto& param : params)
+    {
+        if (param.get_name() == "Kalman_Q")
+        {
+            RCLCPP_INFO(this->get_logger(), "Q update : %f", param.as_double());
+            kalman_filter_CA_->Q_set(param.as_double());
+        }
+        if (param.get_name() == "Kalman_R")
+        {
+            RCLCPP_INFO(this->get_logger(), "R update : %f", param.as_double());
+            kalman_filter_CA_->R_set(param.as_double());
+        }
+    }
+    return result;
 }

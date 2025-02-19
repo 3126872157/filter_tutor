@@ -39,6 +39,10 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::Vector3>::SharedPtr raw_pub_;
     rclcpp::Publisher<geometry_msgs::msg::Vector3>::SharedPtr filtered_pub_;
 
+    rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr params_callback_handle_;
+    rcl_interfaces::msg::SetParametersResult param_callback(
+        const std::vector<rclcpp::Parameter> &params);
+
     void simulator_callback();
     void kalman_callback();
 };
