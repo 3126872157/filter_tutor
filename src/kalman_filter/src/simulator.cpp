@@ -15,6 +15,7 @@ Simulator::Simulator(const std::string& name) : Node(name), generator_(std::rand
     this->declare_parameter("Kalman_Q", 100.0);
     this->declare_parameter("Kalman_R", 0.01);
 
+    //动态参数设置
     params_callback_handle_ = this->add_on_set_parameters_callback(
         std::bind(&Simulator::param_callback, this, std::placeholders::_1));
 
