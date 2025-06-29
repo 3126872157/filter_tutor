@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(kalman_filter)
-
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-endif()
+project(curve_fitter)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -15,9 +10,10 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(Eigen3 REQUIRED)
-
-include_directories(${EIGEN3_INCLUDE_DIR})
+find_package(Ceres REQUIRED)
+find_package(sim_interfaces REQUIRED)
+find_package(rm_interfaces REQUIRED)
+find_package(fmt REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -31,18 +27,23 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(test_node
+add_executable(${PROJECT_NAME}_node
         src/test_node.cpp
         src/simulator.cpp
-        src/kalman.cpp
+        src/curve_fitter.cpp
 )
 
-target_include_directories(test_node PRIVATE include)
+target_include_directories(${PROJECT_NAME}_node PRIVATE include)
 
-ament_target_dependencies(test_node rclcpp geometry_msgs)
+target_link_libraries(${PROJECT_NAME}_node
+        ${CERES_LIBRARIES}
+        fmt::fmt
+)
+
+ament_target_dependencies(${PROJECT_NAME}_node rclcpp geometry_msgs sim_interfaces rm_interfaces)
 
 install(TARGETS
-        test_node
+        ${PROJECT_NAME}_node
         DESTINATION lib/${PROJECT_NAME}
 )
 
