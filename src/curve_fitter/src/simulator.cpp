@@ -6,7 +6,6 @@
 
 //模拟器构造函数
 Simulator::Simulator(const std::string &name) : Node(name) {
-    //初始化匀加速型卡尔曼滤波器，delta_T设置为0.01即100Hz
     curve_fitter_ = std::make_unique<CurveFitter>(MotionType::UNKNOWN);
     curve_fitter_->setAutoTypeDetermined(false);
     curve_fitter_->setType(MotionType::BIG);
